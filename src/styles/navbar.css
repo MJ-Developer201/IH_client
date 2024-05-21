@@ -1,0 +1,20 @@
+@media (max-width: 760px) {
+  #navbar-tabs {
+    display: none;
+  }
+}
+
+#navbar-tabs {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-grow: 1;
+  max-width: 25rem;
+}
+
+@media (max-width: 760px) {
+  #home-icon,
+  #navbar-tabs {
+    display: none;
+  }
+}
