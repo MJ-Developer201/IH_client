@@ -81,6 +81,9 @@ export default function Navbar() {
             <Link to={"/insight"}>
               <Typography>Insight</Typography>
             </Link>
+            <Link to={"/notes"}>
+              <Typography>Notes</Typography>
+            </Link>
           </div>
         )}
 

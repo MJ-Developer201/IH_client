@@ -78,13 +78,13 @@ export default function Sidebar() {
             <ListItemText primary="Insight" />
           </ListItem>
           <ListItem button>
-            <Link to={"/insight"}>
+            <Link to={"/notes"}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
             </Link>
 
-            <ListItemText primary="Settings" />
+            <ListItemText primary="Notes" />
           </ListItem>
         </List>
       </Drawer>

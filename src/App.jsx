@@ -24,6 +24,7 @@ import ActivityPage from "./pages/ActivityPage";
 import { useUserQuery } from "./api/useUserQuery";
 import { getToken } from "./functions/getStorageToken";
 import { getCurrentUser } from "aws-amplify/auth";
+import Notes from "./pages/Notes";
 
 //global Context
 
@@ -64,6 +65,7 @@ function App() {
                   <Route path="/insight" element={<InsightPage />} />
                   <Route path="/projects" element={<ProjectsPage />} />
                   <Route path="/activity" element={<ActivityPage />} />
+                  <Route path="/notes" element={<Notes />} />
                 </Routes>
               </PhotoUrlContext.Provider>
             </AuthContext.Provider>
