@@ -9,16 +9,17 @@ import {
 } from "@mui/material";
 import { getUrl, uploadData } from "aws-amplify/storage";
 import { PhotoUrlContext } from "../App";
-import { UserContext } from "../App";
+import { UserContext, ProfileContext } from "../App";
 import axios from "axios";
 import { getToken } from "../functions/getStorageToken";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserMutation } from "../api/useUserMutation";
 
-export default function EditProfileModal({ data, handleClose }) {
+export default function EditProfileModal({ handleClose }) {
   const [file, setFile] = useState(null);
   const [userId, setUserId] = useContext(UserContext);
+  const data = useContext(ProfileContext);
   const [userPhotoUrl, setUserPhotoUrl] = useContext(PhotoUrlContext);
   const updateUrl = import.meta.env.VITE_USER_UPDATE_API;
   const photoBucketName = import.meta.env.VITE_PHOTO_BUCKET_NAME;
@@ -111,7 +112,7 @@ export default function EditProfileModal({ data, handleClose }) {
   return (
     <Card sx={{ padding: "2rem", margin: "2rem" }}>
       <Avatar
-        src={userPhotoUrl || ""}
+        src={data.avatarUrl || ""}
         sx={{ width: 56, height: 56, margin: "0 auto" }}
       >
         {data && data.username.charAt(0).toUpperCase()}

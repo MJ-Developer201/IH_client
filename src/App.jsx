@@ -2,13 +2,14 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import SignIn from "./pages/SignInPage";
+import SignInPage from "./pages/SignInPage";
 import ProfilePage from "./pages/ProfilePage";
 import { Grid } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./functions/theme";
+import { fetchAuthSession, signIn } from "aws-amplify/auth";
 
 //aws imports
 import { Amplify } from "aws-amplify";
@@ -24,31 +25,69 @@ import ActivityPage from "./pages/ActivityPage";
 import { useUserQuery } from "./api/useUserQuery";
 import { getToken } from "./functions/getStorageToken";
 import { getCurrentUser } from "aws-amplify/auth";
-import Notes from "./pages/Notes";
+import NotesPage from "./pages/NotesPage";
 
 //global Context
 
 export const AuthContext = createContext();
 export const UserContext = createContext();
 export const PhotoUrlContext = createContext();
+export const ProfileContext = createContext();
+
+// Amplify.configure({
+//   ...config,
+//   Auth: {
+//     ...config.Auth,
+//     storage: window.localStorage, // sets the storage system to local storage
+//   },
+// });
 
 function App() {
+  const [signedIn, setSignedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userPhotoUrl, setUserPhotoUrl] = useState("");
+  const [profileData, setProfileData] = useState({});
+  const [setData] = useState({});
+  const accessToken = getToken();
+
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getCurrentUser();
-      setUserId(user.userId);
+      try {
+        const session = await fetchAuthSession();
+        if (session) {
+          const { idToken } = session.tokens;
+          const user = idToken.payload;
+          console.log(user.sub);
+          setUserId(user.sub);
+          setSignedIn(true);
+        }
+      } catch (error) {
+        // console.error("Failed to fetch user:", error.message);
+      }
     };
 
     fetchUser();
   }, []);
 
-  const [signedIn, setSignedIn] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [userPhotoUrl, setUserPhotoUrl] = useState("");
-  const accessToken = getToken();
+  // get the current user
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       if (userId) {
+  //         const user = await getCurrentUser();
+  //         console.log(user.userId);
+  //         setUserId(user.userId);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch user:", error);
+  //     }
+  //   };
 
-  const { isLoading, error, data } = useUserQuery(userId, accessToken);
+  //   fetchUser();
+  // }, []);
+
+  const { isLoading, error, data } = useUserQuery(userId);
 
   return (
     <>
@@ -56,18 +95,22 @@ function App() {
         <ThemeProvider theme={theme}>
           <UserContext.Provider value={[userId, setUserId]}>
             <AuthContext.Provider value={[signedIn, setSignedIn]}>
-              <PhotoUrlContext.Provider value={[userPhotoUrl, setUserPhotoUrl]}>
-                <Navbar />
-                <Routes>
-                  <Route path="/" element={<SignIn />} />
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/insight" element={<InsightPage />} />
-                  <Route path="/projects" element={<ProjectsPage />} />
-                  <Route path="/activity" element={<ActivityPage />} />
-                  <Route path="/notes" element={<Notes />} />
-                </Routes>
-              </PhotoUrlContext.Provider>
+              <ProfileContext.Provider value={data}>
+                <PhotoUrlContext.Provider
+                  value={[userPhotoUrl, setUserPhotoUrl]}
+                >
+                  {data && <Navbar />}
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/notes" element={<NotesPage />} />
+                    <Route path="/signin" element={<SignInPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/insight" element={<InsightPage />} />
+                    <Route path="/projects" element={<ProjectsPage />} />
+                    <Route path="/activity" element={<ActivityPage />} />
+                  </Routes>
+                </PhotoUrlContext.Provider>
+              </ProfileContext.Provider>
             </AuthContext.Provider>
           </UserContext.Provider>
         </ThemeProvider>

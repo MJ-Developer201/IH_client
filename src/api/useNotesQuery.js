@@ -1,21 +1,20 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "aws-amplify/auth";
+import axios from "axios";
 import { getToken } from "../functions/getStorageToken";
 
-const userData_Api = import.meta.env.VITE_USERDATA_API;
+const notesGetApi = import.meta.env.VITE_NOTE_GET_API;
 const localPort = import.meta.env.VITE_LOCAL_PORT;
 
-export function useUserQuery(userId) {
-  const accessToken = getToken();
+console.log(notesGetApi);
+
+export function useNotesQuery() {
   const { isLoading, error, data } = useQuery({
-    queryKey: ["user", userId],
+    queryKey: ["notes"],
     queryFn: async () => {
-      if (!userId) {
-        return null;
-      }
+      const accessToken = getToken();
+
       const response = await axios.get(
-        `http://127.0.0.1:${localPort}/${userData_Api}`,
+        `http://127.0.0.1:${localPort}/${notesGetApi}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -23,8 +22,9 @@ export function useUserQuery(userId) {
         }
       );
 
-      return response.data.user;
+      return response.data.notes;
     },
+    // enabled: !!userId,
   });
 
   return { isLoading, error, data };

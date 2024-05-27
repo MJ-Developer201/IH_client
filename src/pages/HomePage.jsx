@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Typography, Box } from "@mui/material";
 
+import { Link } from "react-router-dom";
+
 export default function HomeScreen() {
   return (
     <Box
@@ -46,13 +48,15 @@ export default function HomeScreen() {
         >
           Track and manage bugs in your projects
         </Typography>
-        <Button
-          sx={{ margin: 1, backgroundColor: "#17A2B8" }}
-          variant="contained"
-          onClick={() => console.log("How It Works")}
-        >
-          How It Works
-        </Button>
+        <Link to="/signin">
+          <Button
+            sx={{ margin: 1, backgroundColor: "#17A2B8" }}
+            variant="contained"
+            onClick={() => console.log("How It Works")}
+          >
+            Sign In
+          </Button>
+        </Link>
         <Button
           sx={{ margin: 1, backgroundColor: "#FFA500" }}
           variant="contained"

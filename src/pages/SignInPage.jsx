@@ -42,11 +42,12 @@ export default function SignIn() {
       });
       setSignedIn(true);
       const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
-      console.log(accessToken);
+      // console.log(accessToken);
       localStorage.setItem("accessToken", accessToken);
-      const { userId } = await getCurrentUser();
-      console.log(userId);
-      setUserId(userId);
+      const user = idToken.payload;
+      // console.log(user.sub);
+      setUserId(user.sub);
+      setSignedIn(true);
       navigate("/profile");
     } catch (error) {
       console.log("error signing in", error.message);

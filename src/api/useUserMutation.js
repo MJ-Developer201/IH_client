@@ -6,7 +6,6 @@ import { UserContext } from "../App";
 
 const userMutationApi = import.meta.env.VITE_USER_UPDATE_API;
 const localPort = import.meta.env.VITE_LOCAL_PORT;
-console.log(localPort);
 
 export function useUserMutation() {
   const accessToken = getToken();

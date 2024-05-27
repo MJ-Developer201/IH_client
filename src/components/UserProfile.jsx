@@ -16,6 +16,7 @@ import {
   TextField,
   Modal,
 } from "@mui/material";
+import { ProfileContext } from "../App";
 
 export default function UserProfileComponent() {
   const accessToken = getToken();
@@ -27,20 +28,20 @@ export default function UserProfileComponent() {
   const handleClose = () => setOpen(false);
 
   const { isLoading, error, data } = useUserQuery(userId, accessToken);
+  // console.log(data);
 
-
-  useEffect(() => {
-    if (data && data.avatarUrl) {
-      setUserPhotoUrl(data.avatarUrl);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.avatarUrl) {
+  //     setUserPhotoUrl(data.avatarUrl);
+  //   }
+  // }, [data]);
 
   if (isLoading) {
-    <LoadingSpinner />;
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    <div>Error: {error.message}</div>;
+    return <div>Error: {error.message}</div>;
   }
 
   return (
@@ -129,7 +130,7 @@ export default function UserProfileComponent() {
       </Card>
       <Modal open={open} onClose={handleClose}>
         <div>
-          <EditProfileModal data={data} handleClose={handleClose} />
+          <EditProfileModal handleClose={handleClose} />
         </div>
       </Modal>
     </Container>

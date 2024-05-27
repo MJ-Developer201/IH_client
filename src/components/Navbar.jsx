@@ -9,18 +9,21 @@ import {
   Menu,
   Avatar,
 } from "@mui/material";
-import { AuthContext } from "../App";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { AuthContext, ProfileContext } from "../App";
 import { signOut } from "aws-amplify/auth";
 import HomeIcon from "@mui/icons-material/Home";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import "../styles/navbar.css";
-import { PhotoUrlContext } from "../App";
+import { PhotoUrlContext, UserContext } from "../App";
 
 export default function Navbar() {
-  const [userPhotoUrl, setUserPhotoUrl] = useContext(PhotoUrlContext);
-
+  const data = useContext(ProfileContext);
+  const queryClient = useQueryClient();
+  const [userId, setUserId] = useContext(UserContext);
   const [signedIn, setSignedIn] = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -37,10 +40,12 @@ export default function Navbar() {
   async function handleSignOut() {
     try {
       await signOut();
+      setUserId("");
       localStorage.removeItem("accessToken");
       console.log("User Signed Out");
       setSignedIn(false);
-      navigate("/");
+      queryClient.removeQueries();
+      navigate("/signin");
     } catch (error) {
       console.log("error signing out: ", error);
     }
@@ -67,7 +72,7 @@ export default function Navbar() {
           </IconButton>
         </Link>
 
-        {signedIn && (
+        {data && (
           <div id="navbar-tabs">
             <Link to={"/projects"}>
               <Typography>Projects</Typography>
@@ -75,9 +80,7 @@ export default function Navbar() {
             <Link to={"/activity"}>
               <Typography>Activity</Typography>
             </Link>
-            <Link to={"/profile"}>
-              <Typography>Profile</Typography>
-            </Link>
+
             <Link to={"/insight"}>
               <Typography>Insight</Typography>
             </Link>
@@ -97,7 +100,7 @@ export default function Navbar() {
           <InputBase placeholder="Search…" />
 
           <IconButton onClick={handleMenu} color="inherit">
-            <Avatar src={userPhotoUrl || ""} />
+            {data && <Avatar src={data.avatarUrl || ""} />}
           </IconButton>
 
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
