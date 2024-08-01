@@ -8,8 +8,14 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useEditNote } from "../api/useEditNote";
+import { CustomAlert } from "./CustomNotification";
 
-export default function EditNoteModal({ data, handleClose, open }) {
+export default function EditNoteModal({
+  data,
+  handleClose,
+  open,
+  onEditSuccess,
+}) {
   const [reference, setReference] = useState("");
   const [note, setNote] = useState("");
   const editNoteMutation = useEditNote();
@@ -23,21 +29,34 @@ export default function EditNoteModal({ data, handleClose, open }) {
   }, [data]);
 
   const handleSave = () => {
-    editNoteMutation.mutate({
-      noteId: data.id,
-      updateFields: {
-        reference,
-        note,
+    editNoteMutation.mutate(
+      {
+        noteId: data.id,
+        updateFields: {
+          reference,
+          note,
+        },
       },
-    });
-    handleClose();
+      {
+        onSuccess: () => {
+          console.log("success");
+
+          onEditSuccess("Note edited successfully");
+          handleClose();
+        },
+        onError: () => {
+          console.log("error");
+          setAlert({ message: "Error saving data", severity: "error" });
+        },
+      }
+    );
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogContent>
+    <Dialog sx={{ borderRadius: "30px" }} open={open} onClose={handleClose}>
+      <DialogContent sx={{ padding: "5rem" }} dividers>
         <Grid container spacing={6}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={12}>
             <TextField
               label="Reference"
               value={reference}
@@ -45,12 +64,11 @@ export default function EditNoteModal({ data, handleClose, open }) {
               onChange={(e) => setReference(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={12}>
             <TextField
               label="Note"
               value={note}
               fullWidth
-              multiline
               onChange={(e) => setNote(e.target.value)}
             />
           </Grid>
@@ -64,6 +82,7 @@ export default function EditNoteModal({ data, handleClose, open }) {
           Save Changes
         </Button>
       </DialogActions>
+      <CustomAlert message={alert.message} severity={alert.severity} />
     </Dialog>
   );
 }

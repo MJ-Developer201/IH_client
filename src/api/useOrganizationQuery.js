@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getToken } from "../functions/getStorageToken";
 
-const notesGetApi = import.meta.env.VITE_NOTE_GET_API;
+const getSingleOrgApi = import.meta.env.VITE_GET_SINGLE_ORG_API;
 const localPort = import.meta.env.VITE_LOCAL_PORT;
 
-export function useNotesQuery() {
+export function useOrganizationQuery(orgId) {
   const { isLoading, error, data } = useQuery({
-    queryKey: ["notes"],
+    queryKey: ["organization", orgId],
     queryFn: async () => {
       const accessToken = getToken();
 
       const response = await axios.get(
-        `http://127.0.0.1:${localPort}/${notesGetApi}`,
+        `http://127.0.0.1:${localPort}/${getSingleOrgApi}/${orgId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -20,9 +20,9 @@ export function useNotesQuery() {
         }
       );
 
-      return response.data.notes;
+      return response.data.organization;
     },
-    // enabled: !!userId,
+    enabled: !!orgId,
   });
 
   return { isLoading, error, data };

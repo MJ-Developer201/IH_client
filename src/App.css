@@ -6,3 +6,12 @@ a {
 a:hover {
   color: inherit;
 }
+
+.container {
+  padding-left: 4rem !important;
+  transition: padding 0.3s ease-in-out;
+}
+
+.container.sidebarOpen {
+  padding-left: 240px !important;
+}

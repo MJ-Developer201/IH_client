@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import "../styles/navbar.css";
 import { PhotoUrlContext, UserContext } from "../App";
+import AddProjectBtnComp from "./AddProjectBtnComp";
 
 export default function Navbar() {
   const data = useContext(ProfileContext);
@@ -60,7 +61,7 @@ export default function Navbar() {
       position="static"
     >
       <Toolbar style={{ justifyContent: "space-between" }}>
-        <Sidebar />
+        {/* <Sidebar /> */}
         <Link to={"/"}>
           <IconButton
             id="home-icon"
@@ -102,6 +103,7 @@ export default function Navbar() {
           <IconButton onClick={handleMenu} color="inherit">
             {data && <Avatar src={data.avatarUrl || ""} />}
           </IconButton>
+          <AddProjectBtnComp />
 
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
             <Link to={"/profile"}>

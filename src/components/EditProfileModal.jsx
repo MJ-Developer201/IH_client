@@ -14,9 +14,10 @@ import axios from "axios";
 import { getToken } from "../functions/getStorageToken";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import { CustomAlert } from "./CustomNotification";
 import { useUserMutation } from "../api/useUserMutation";
 
-export default function EditProfileModal({ handleClose }) {
+export default function EditProfileModal({ handleClose, setAlert }) {
   const [file, setFile] = useState(null);
   const [userId, setUserId] = useContext(UserContext);
   const data = useContext(ProfileContext);
@@ -78,7 +79,7 @@ export default function EditProfileModal({ handleClose }) {
         { avatarUrl: fileUrl },
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json   ",
             Authorization: `Bearer ${accessToken}`,
           },
         }
@@ -96,6 +97,8 @@ export default function EditProfileModal({ handleClose }) {
       alert(`Error uploading file: ${error.message}`);
     }
   };
+
+  // save profile data function
   const handleSaveData = async () => {
     console.log("attemting to save");
     const updateFields = {
@@ -106,7 +109,17 @@ export default function EditProfileModal({ handleClose }) {
       position: position,
       location: location,
     };
-    userMutation.mutate(updateFields);
+    userMutation.mutate(updateFields, {
+      onSuccess: () => {
+        console.log("success");
+        setAlert({ message: "Data saved successfully", severity: "success" });
+        handleClose();
+      },
+      onError: () => {
+        console.log(error.message);
+        setAlert({ message: "Error saving data,", severity: "error" });
+      },
+    });
   };
 
   return (
@@ -169,7 +182,7 @@ export default function EditProfileModal({ handleClose }) {
             />
           </Grid>
         </Grid>
-        <Grid>
+        {/* <Grid>
           <TextField
             style={{ marginTop: "2em" }}
             type="file"
@@ -183,7 +196,7 @@ export default function EditProfileModal({ handleClose }) {
           <Button onClick={handleUpdatePhoto} variant="text">
             Update Photo
           </Button>
-        </Grid>
+        </Grid> */}
         <Grid
           container
           spacing={2}
@@ -202,6 +215,7 @@ export default function EditProfileModal({ handleClose }) {
           </Grid>
         </Grid>
       </CardContent>
+      <CustomAlert message={alert.message} severity={alert.severity} />
     </Card>
   );
 }

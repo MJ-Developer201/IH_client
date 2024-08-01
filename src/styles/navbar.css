@@ -15,6 +15,6 @@
 @media (max-width: 760px) {
   #home-icon,
   #navbar-tabs {
-    /* display: none; */
+    display: none;
   }
 }
