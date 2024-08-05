@@ -1,10 +1,19 @@
-import { Height } from "@mui/icons-material";
 import { createTheme } from "@mui/material";
-import { color } from "framer-motion";
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2", // Blue color
+    },
+    secondary: {
+      main: "#757575", // Grey color
+    },
+  },
   components: {
     MuiCard: {
+      defaultProps: {
+        elevation: 1,
+      },
       styleOverrides: {
         root: {
           border: "16px",
@@ -18,6 +27,13 @@ const theme = createTheme({
             height: "50px", // Change the height
             borderRadius: "12px",
           },
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          // backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
       },
     },
